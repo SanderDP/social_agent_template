@@ -1,0 +1,25 @@
+# Sleutels — nooit committen
+.env
+.env.*
+!.env.example
+*.token.json
+
+# Node / Remotion
+node_modules/
+remotion/out/
+remotion/build/
+.remotion/
+
+# Python
+__pycache__/
+.venv/
+
+# Grote ruwe bestanden (eindvideo's gaan via de levering, zie docs/)
+*.mov
+*.wav
+brands/*/analytics/inbox/*
+!brands/*/analytics/inbox/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
