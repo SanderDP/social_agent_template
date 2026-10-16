@@ -1,4 +1,3 @@
-import { loadFont } from "@remotion/google-fonts/IBMPlexSans";
 import {
   AbsoluteFill,
   Img,
@@ -8,9 +7,10 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { titelFont } from "./fonts";
 
-// Test of renderen werkt: Google Font laden, afbeelding uit public/, spring-animatie.
-const { fontFamily } = loadFont("normal", { weights: ["700"], subsets: ["latin"] });
+// Test of renderen werkt: lokaal lettertype, afbeelding uit public/, spring-animatie.
+const fontFamily = titelFont;
 
 export const Haalbaarheid: React.FC = () => {
   const frame = useCurrentFrame();

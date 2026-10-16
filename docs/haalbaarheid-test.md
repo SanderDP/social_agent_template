@@ -1,30 +1,31 @@
-# Haalbaarheidstest cloud (Fase 2, stap 2)
+# Haalbaarheidstest cloud — ronde 2
 
-Opdracht voor een cloud-sessie. Doel: nagaan of de wekelijkse productie volledig in de cloud
-kan draaien (optie A). Voer de drie tests uit, schrijf de resultaten weg en push ze.
-Stop niet bij een mislukte test: noteer de fout en ga door met de volgende.
+Ronde 1 staat in `docs/haalbaarheid-resultaat.md` op de branch `claude/haalbaarheid`:
+de render faalde omdat headless Chrome tijdens het renderen een Google Font van internet
+haalde en de proxy-CA niet vertrouwt (`ERR_CERT_AUTHORITY_INVALID`), en GitHub-releases
+zijn verboden voor cloud-sessies.
 
-## Test 1 — Remotion renderen
-1. Linux-bibliotheken voor Chrome Headless Shell (Ubuntu 24.04), indien nodig:
-   `apt-get update && apt-get install -y libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libgbm1 libasound2t64 libxrandr2 libxkbcommon0 libxfixes3 libxcomposite1 libxdamage1 libpango-1.0-0 libcairo2 libcups2t64`
-2. `cd remotion && npm ci && npm run render:test`
-3. Noteer: gelukt ja/nee, duur, bestandsgrootte van `remotion/out/haalbaarheid.mp4`, en bij
-   een fout de exacte melding. Vooral: welke host geblokkeerd werd (`403` /
-   `host_not_allowed`), bv. `remotion.media`, `fonts.gstatic.com`, `fonts.googleapis.com`.
+Aanpassingen sindsdien: lettertypes staan lokaal in `remotion/public/fonts/` en worden via
+`@remotion/fonts` geladen. Tijdens het renderen wordt dus niets meer van internet gehaald.
+Levering gebeurt niet meer via releases maar via een aparte branch.
 
-## Test 2 — pushmelding naar de iPhone
-Gebruik de tool `PushNotification` (laad hem eerst via ToolSearch als hij uitgesteld is) met:
-"Cloud-test Alcolympics: render [gelukt/mislukt]. Kwam deze melding aan?"
-Noteer exact wat de tool teruggeeft. Bestaat de tool niet in deze sessie, noteer dat.
+Voer de twee tests uit. Stop niet bij een mislukte test: noteer de exacte fout. Schakel nooit
+TLS-verificatie uit.
 
-## Test 3 — MP4 leveren zonder hem in git te zetten
-Probeer een GitHub-release met de MP4 als bijlage, via REST (geen GraphQL):
-1. `gh api repos/{owner}/{repo}/releases -f tag_name=test-haalbaarheid -f name="Test haalbaarheid" -F prerelease=true`
-2. Upload de MP4 naar de `upload_url` uit het antwoord (host `uploads.github.com`), bv. met
-   `gh api --method POST -H "Content-Type: video/mp4" "<upload_url zonder {?name,label}>?name=haalbaarheid.mp4" --input remotion/out/haalbaarheid.mp4`
-3. Noteer of het lukte en de downloadlink (`browser_download_url`).
-Lukt het niet: noteer de fout.
+## Test 1 — Remotion renderen (opnieuw)
+1. `cd remotion && npm ci && npm run render:test`
+2. Noteer: gelukt ja/nee, totale duur, bestandsgrootte van `remotion/out/haalbaarheid.mp4`,
+   en bij een fout de exacte melding.
+
+## Test 2 — MP4 leveren via een aparte branch
+1. Maak vanaf `main` een nieuwe branch `claude/levering-test`.
+2. Kopieer de MP4 naar `levering/haalbaarheid.mp4` (forceer toevoegen als `.gitignore` hem
+   tegenhoudt), commit en push die branch.
+3. Noteer of het pushen lukte en de link
+   `https://github.com/SanderDP/social_agent_template/blob/claude/levering-test/levering/haalbaarheid.mp4`.
 
 ## Resultaat
-Schrijf alles naar `docs/haalbaarheid-resultaat.md` (per test: gelukt/mislukt, details,
-foutmeldingen) en push naar de branch `claude/haalbaarheid`. Commit geen MP4.
+Schrijf alles naar `docs/haalbaarheid-resultaat-2.md` en push naar de branch
+`claude/haalbaarheid-2`. Zet de MP4 enkel op `claude/levering-test`, niet op
+`claude/haalbaarheid-2`. Stuur op het einde een pushmelding (tool `PushNotification`) met
+"Cloud-test 2 klaar: render [gelukt/mislukt], levering [gelukt/mislukt]".
